@@ -3,7 +3,6 @@ package com.example.mybabysiteapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,16 +24,72 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.clickable
+import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import com.example.mybabysiteapplication.data.AppDatabase
+import com.example.mybabysiteapplication.data.BabysitterEntity
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate - Aplicación abierta")
+
+        //Inicializar la BBDD
+        val database = AppDatabase.getDatabase(this)
+        val babysitterDao = database.babysitterDao()
+
+        // Insertar un canguro
+        lifecycleScope.launch{
+            val newBabysitter= BabysitterEntity(
+                name = "Ana",
+                age = 25,
+                experience = 3
+            )
+            babysitterDao.insertBabysitter(newBabysitter)
+
+            // Consultar todos los canguros
+            val babysitters = babysitterDao.getAllBabysitters()
+            babysitters.forEach {
+                println("Canguro: ${it.name}, Edad: ${it.age}, Experiencia: ${it.experience}")
+            }
+        }
         setContent {
             MyBabySiteApplicationTheme {
                 BabySiteApp()
             }
         }
     }
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart - Aplicación visible")
+    }
+    override fun onResume(){
+        super.onResume()
+        Log.d(TAG, "onResume - Aplicación en primer plano")
+    }
+    override fun onPause(){
+        super.onPause()
+        Log.d(TAG, "onPause - Aplicación minimizada o parcialmente oculta")
+    }
+    override fun onStop(){
+        super.onStop()
+        Log.d(TAG, "onStop - Aplicación completamente oculta")
+    }
+    override fun onDestroy(){
+        super.onDestroy()
+        Log.d(TAG, "onDestroy - Aplicación cerrada")
+    }
+    override fun onSaveInstanceState(outState: Bundle){
+        super.onSaveInstanceState(outState)
+        Log.d(TAG, "onSaveInstanceState - Guardando estado antes de una rotación o cierre")
+    }
+    override fun onLowMemory(){
+        super.onLowMemory()
+        Log.d(TAG, "onLowMemory - Dispositivo con poca memoria")
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

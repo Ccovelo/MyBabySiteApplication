@@ -1,7 +1,11 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id ("kotlin-kapt") //agrega este plugin
+
 }
 
 android {
@@ -30,6 +34,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -58,6 +63,11 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation("androidx.navigation:navigation-compose:2.7.4")
+    //Dependencias de Room usando libs.version.tml
+    implementation (libs.androidx.room.runtime)//Runtime para Room
+    kapt(libs.androidx.room.compiler) // Para Kotlin
+    implementation(libs.androidx.room.ktx) // Para Java
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
