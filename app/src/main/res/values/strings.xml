@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">The BabySite App</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
 </resources>

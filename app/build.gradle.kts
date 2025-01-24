@@ -64,6 +64,10 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation("androidx.navigation:navigation-compose:2.7.4")
     //Dependencias de Room usando libs.version.tml
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.androidx.appcompat)
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     implementation (libs.androidx.room.runtime)//Runtime para Room
     kapt(libs.androidx.room.compiler) // Para Kotlin
     implementation(libs.androidx.room.ktx) // Para Java

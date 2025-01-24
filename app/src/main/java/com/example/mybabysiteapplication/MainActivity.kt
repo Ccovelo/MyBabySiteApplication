@@ -25,12 +25,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.clickable
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mybabysiteapplication.data.AppDatabase
+import com.example.mybabysiteapplication.data.BabysitterDao
 import com.example.mybabysiteapplication.data.BabysitterEntity
+import com.example.mybabysiteapplication.data.BabysitterViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val babysitterViewModel:BabysitterViewModel by viewModels()
     private val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,27 +46,47 @@ class MainActivity : ComponentActivity() {
         val database = AppDatabase.getDatabase(this)
         val babysitterDao = database.babysitterDao()
 
-        // Insertar un canguro
+        // Insertar, consultar, actualizar y eliminar canguros en segundo plano
         lifecycleScope.launch{
-            val newBabysitter= BabysitterEntity(
-                name = "Ana",
-                age = 25,
-                experience = 3
-            )
-            babysitterDao.insertBabysitter(newBabysitter)
-
-            // Consultar todos los canguros
-            val babysitters = babysitterDao.getAllBabysitters()
-            babysitters.forEach {
-                println("Canguro: ${it.name}, Edad: ${it.age}, Experiencia: ${it.experience}")
-            }
+            pruebaCRUD(babysitterDao)
+            babysitterViewModel.insertBabysitter(BabysitterEntity(name="Juan", age= 30, experience = 8))
         }
         setContent {
             MyBabySiteApplicationTheme {
-                BabySiteApp()
+                BabySiteApp(babysitterViewModel)
             }
         }
     }
+    private suspend fun pruebaCRUD(babysitterDao: BabysitterDao) {
+        // Insertar un nuevo babysitter
+        val newBabysitter = BabysitterEntity(
+            name = "María",
+            age = 25,
+            experience = 5
+        )
+        val id = babysitterDao.insertBabysitter(newBabysitter)
+        Log.d(TAG, "Nuevo canguro insertado con ID: $id")
+
+        // Consultar todos los babysitters
+        val babysitters = babysitterDao.getAllBabysitters().value?: emptyList()//con función q devuelve LiveData o Flow,convertirla a una lista antes de iterar
+        if (babysitters.isNotEmpty()) {
+            babysitters.forEach { babysitter:BabysitterEntity ->
+                Log.d(TAG, "Canguro: ${babysitter.name}, Edad: ${babysitter.age}, Experiencia: ${babysitter.experience}")
+            }
+
+            // Actualizar el primer babysitter
+            val updatedBabysitter = babysitters.first().copy(name = "María Actualizada")
+            babysitterDao.updateBabysitter(updatedBabysitter)
+            Log.d(TAG, "Canguro actualizado: ${updatedBabysitter.name}")
+
+            // Eliminar el babysitter actualizado
+            babysitterDao.deleteBabysiter(updatedBabysitter)
+            Log.d(TAG, "Canguro eliminado: ${updatedBabysitter.name}")
+        } else {
+            Log.d(TAG, "No hay canguros en la base de datos.")
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart - Aplicación visible")
@@ -77,6 +103,7 @@ class MainActivity : ComponentActivity() {
         super.onStop()
         Log.d(TAG, "onStop - Aplicación completamente oculta")
     }
+
     override fun onDestroy(){
         super.onDestroy()
         Log.d(TAG, "onDestroy - Aplicación cerrada")
@@ -94,7 +121,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BabySiteApp() {
+fun BabySiteApp(viewModel: BabysitterViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -237,6 +264,6 @@ fun MainContent(modifier: Modifier = Modifier) {
 @Composable
 fun BabySiteAppPreview() {
     MyBabySiteApplicationTheme {
-        BabySiteApp()
+        BabySiteApp(viewModel())
     }
 }
