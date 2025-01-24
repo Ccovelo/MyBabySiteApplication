@@ -6,9 +6,9 @@ Interfaz Mínima
 • Un Scaffold como base: contenedor principal para la estructura. 
 • Un AppBar: el título/nombre de la aplicacion que es "BabySite Dashboard". 
 • Texto descriptivo: aquí irá una Lista de actividades para los niños y servicios que se ofrecen • Imagen: Un ícono representativo relacionada con el tema de cuidado infantil. 
-• Lista de elementos simulando datos: lista de nombres de niños o actividades. En la AppBar: El TopAppBar contiene un título fijo para toda la aplicación. La imagen ahora consta (R.drawable.ic_launcher_foreground como ejemplo) pero se modificará por la real/definitiva. 4. Lista de Datos: Se simula una lista de nombres de niños para mostrar cómo se visualizarán datos dinámicos. Próximos Pasos a realizar.
+• Lista de elementos simulando datos: lista de nombres de niños o actividades. En la AppBar: El TopAppBar contiene un título fijo para toda la aplicación. La imagen ahora consta (R.drawable.ic_launcher_foreground como ejemplo) pero se modificará por la real/definitiva. 
 
-Conectar la lista simulada a datos reales a una base de datos local realizada en SQL o una API.
-Diseñar el tema visual en MyBabySiteApplicationTheme para que la aplicación sea coherente visualmente.
+Se ha añadido la conexión a BBDD tanto con Room como con SQLite, también se ha añadido una nueva activity para el Login.
 
-Nota para el profesor: he intentado la parte de Dao y aunque he buscado todo tipo de soluciones y he rearmado numerosas veces el proyecto, siempre me da error por el java y no sé por dónde más ir para arreglarlo, estoy atascada en esa parte, si pudieses ayudarme para arreglarlo.
+Nota para el profesor: me sigue dando un error en la parte de java de la aplicacion y aunque busqué información me seguía dando algún error. Si puedes revisarlo y decirme si te sale y cómo arreglarlo.
+Gracias
