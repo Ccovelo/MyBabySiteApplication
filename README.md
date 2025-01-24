@@ -10,3 +10,5 @@ Interfaz Mínima
 
 Conectar la lista simulada a datos reales a una base de datos local realizada en SQL o una API.
 Diseñar el tema visual en MyBabySiteApplicationTheme para que la aplicación sea coherente visualmente.
+
+Nota para el profesor: he intentado la parte de Dao y aunque he buscado todo tipo de soluciones y he rearmado numerosas veces el proyecto, siempre me da error por el java y no sé por dónde más ir para arreglarlo, estoy atascada en esa parte, si pudieses ayudarme para arreglarlo.
