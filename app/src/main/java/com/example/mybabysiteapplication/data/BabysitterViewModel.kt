@@ -1,32 +1,61 @@
 package com.example.mybabysiteapplication.data
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
+import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mybabysiteapplication.network.ApiService
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BabysitterViewModel (application: Application):AndroidViewModel(application) {
-private val babysitterDao= AppDatabase.getDatabase(application).babysitterDao()
-    //para la UI
-    val babysitters: LiveData<List<BabysitterEntity>> = babysitterDao.getAllBabysitters()
-    //para operaciones suspendidas
-    suspend fun getAllBabysittersList():List<BabysitterEntity>{
-        return babysitterDao.getAllBabysittersList()
+@HiltViewModel
+class BabysitterViewModel @Inject constructor(
+    private val _babysitterDao:BabysitterDao,
+    private val apiService: ApiService
+) : ViewModel() {
+    private val _babysittersState= MutableStateFlow<List<BabysitterEntity>>(emptyList())
+    val babysittersState: StateFlow<List<BabysitterEntity>> = _babysittersState
+
+    init {
+        fetchBabysitters()
     }
+    private fun fetchBabysitters() {
+        viewModelScope.launch {
+            _babysitterDao.getAllBabysitters().collect { babysitters ->
+                _babysittersState.value = babysitters
+            }
+        }
+    }
+
     fun insertBabysitter (babysitter:BabysitterEntity){
         viewModelScope.launch {
-            babysitterDao.insertBabysitter(babysitter)
+            _babysitterDao.insertBabysitter(babysitter)
+            fetchBabysitters()
         }
     }
     fun updateBabysitter (babysitter: BabysitterEntity){
         viewModelScope.launch {
-            babysitterDao.updateBabysitter(babysitter)
+            _babysitterDao.updateBabysitter(babysitter)
+            fetchBabysitters()
         }
     }
     fun deleteBabysitter(babysitter: BabysitterEntity){
         viewModelScope.launch {
-            babysitterDao.deleteBabysiter(babysitter)
+            _babysitterDao.deleteBabysiter(babysitter)
+            fetchBabysitters()
+        }
+    }
+    fun fetchBabysittersFromApi() {
+        viewModelScope.launch {
+            try {
+                val apiResponse = apiService.getBabysitters()
+                // Convertir datos si es necesario antes de insertarlos en Room
+                _babysittersState.value = apiResponse.map { BabysitterEntity(it.name, it.age, it.experience) }
+            } catch (e: Exception) {
+                Log.e("API Error", "Error al obtener babysitters: ${e.message}")
+            }
         }
     }
 }
