@@ -1,5 +1,7 @@
 package com.example.mybabysiteapplication
 
+import android.graphics.BitmapFactory
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.clickable
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,10 +38,12 @@ import com.example.mybabysiteapplication.data.AppDatabase
 import com.example.mybabysiteapplication.data.BabysitterDao
 import com.example.mybabysiteapplication.data.BabysitterEntity
 import com.example.mybabysiteapplication.data.BabysitterViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val babysitterViewModel:BabysitterViewModel by viewModels()
     private val TAG = "MainActivity"
@@ -49,47 +55,12 @@ class MainActivity : ComponentActivity() {
         val database = AppDatabase.getDatabase(this)
         val babysitterDao = database.babysitterDao()
 
-        // Insertar, consultar, actualizar y eliminar canguros en segundo plano
-        lifecycleScope.launch{
-            pruebaCRUD(babysitterDao)
-            babysitterViewModel.insertBabysitter(BabysitterEntity(name="Juan", age= 30, experience = 8))
-        }
         setContent {
             MyBabySiteApplicationTheme {
                 BabySiteApp(babysitterViewModel)
             }
         }
     }
-    private suspend fun pruebaCRUD(babysitterDao: BabysitterDao) {
-        // Insertar un nuevo babysitter
-        val newBabysitter = BabysitterEntity(
-            name = "María",
-            age = 25,
-            experience = 5
-        )
-        val id = babysitterDao.insertBabysitter(newBabysitter)
-        Log.d(TAG, "Nuevo canguro insertado con ID: $id")
-
-        // Consultar todos los babysitters
-        val babysitters = babysitterDao.getAllBabysitters().value?: emptyList()//con función q devuelve LiveData o Flow,convertirla a una lista antes de iterar
-        if (babysitters.isNotEmpty()) {
-            babysitters.forEach { babysitter:BabysitterEntity ->
-                Log.d(TAG, "Canguro: ${babysitter.name}, Edad: ${babysitter.age}, Experiencia: ${babysitter.experience}")
-            }
-
-            // Actualizar el primer babysitter
-            val updatedBabysitter = babysitters.first().copy(name = "María Actualizada")
-            babysitterDao.updateBabysitter(updatedBabysitter)
-            Log.d(TAG, "Canguro actualizado: ${updatedBabysitter.name}")
-
-            // Eliminar el babysitter actualizado
-            babysitterDao.deleteBabysiter(updatedBabysitter)
-            Log.d(TAG, "Canguro eliminado: ${updatedBabysitter.name}")
-        } else {
-            Log.d(TAG, "No hay canguros en la base de datos.")
-        }
-    }
-
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart - Aplicación visible")
@@ -175,7 +146,7 @@ fun HomeScreen(navController: NavHostController) {
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.babysitterppal),
+                painter = rememberImagePainter(data = R.drawable.babysitterppal),
                 contentDescription = "Logo BabySite",
                 modifier = Modifier.fillMaxSize()
             )
@@ -230,35 +201,6 @@ fun DetailScreen(navController: NavHostController, name: String) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "Volver")
-        }
-    }
-}
-//podria eliminarse al hacer lo mismo en el home, revisar más adelante
-@Composable
-fun MainContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Texto descriptivo
-        Text("Bienvenido a BabySite: Administra tus solicitudes de canguro.")
-
-        // Imagen
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground), // Reemplazar con una imagen mas adelante
-            contentDescription = "Logo BabySite",
-            modifier = Modifier.size(100.dp)
-        )
-
-        // Lista simulada
-        val babysitters = listOf("Juan", "Ana", "Luis", "Sofía")
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(babysitters) { ayudantes ->
-                Text(text = "Canguro/a: $ayudantes", style = MaterialTheme.typography.bodyMedium)
-            }
         }
     }
 }

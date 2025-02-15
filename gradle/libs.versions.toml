@@ -25,9 +25,12 @@ uiToolingPreview = "1.7.7"
 uiToolingPreviewAndroid = "1.7.7"
 tracingPerfettoHandshake = "1.0.0"
 volley = "1.2.1"
-ksp = "2.0.21-1.0.14"
+ksp = "2.0.0-1.0.14"
 ktor = "2.3.11"
 firebaseCrashlyticsBuildtools = "3.0.2"
+datastoreCoreAndroid = "1.1.2"
+datastoreCoreJvm = "1.1.2"
+datastorePreferencesCoreJvm = "1.1.2"
 
 [libraries]
 androidx-activity-compose-v172 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -70,6 +73,9 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 kotlin-serialization = {module = "io.ktor:ktor-serialization-kotlinx-json", version.ref="ktor"}
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
+androidx-datastore-core-jvm = { group = "androidx.datastore", name = "datastore-core-jvm", version.ref = "datastoreCoreJvm" }
+androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name = "datastore-preferences-core-jvm", version.ref = "datastorePreferencesCoreJvm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

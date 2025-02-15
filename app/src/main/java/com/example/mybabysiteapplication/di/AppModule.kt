@@ -34,7 +34,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://superheroapi.com/api/access-token/search/name")
+            .baseUrl("https://api.chucknorris.io/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

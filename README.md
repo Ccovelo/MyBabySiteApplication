@@ -10,7 +10,5 @@ Interfaz Mínima
 
 Se ha añadido la conexión a BBDD tanto con Room como con SQLite, también se ha añadido una nueva activity para el Login.
 
-Tarea 4: me he quedado algo corta en esta parte pero se me echó el tiempo encima y estuve y estoy enferma la última semana. De lo indicado en la corrección de la tarea 3 he cambiado el LiveData y el kapt por el ksp pero me da error el archivo de gradle y he buscado y aplicado varios cambios vistos en internet pero no hay manera siempre me da un error.
+Tarea 5: De lo indicado en la corrección de la tarea 3 he cambiado el LiveData y el kapt por el ksp pero me da error el archivo de gradle y he buscado y aplicado varios cambios vistos en internet pero no hay manera siempre me da un error. He modificado tanto el gradle como el settings y el tml
 
-Nota para el profesor: me sigue dando un error en la parte de java de la aplicacion y aunque busqué información me seguía dando algún error. Si puedes revisarlo y decirme si te sale y cómo arreglarlo.
-Gracias

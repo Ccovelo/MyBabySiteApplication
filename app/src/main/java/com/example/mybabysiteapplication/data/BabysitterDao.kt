@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.Continuation
 
 
@@ -13,7 +15,7 @@ import kotlin.coroutines.Continuation
 
 interface BabysitterDao {
     // Insertar un nuevo canguro
-    @Insert
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBabysitter(babysitter: BabysitterEntity): Long
 
     @Delete
@@ -24,8 +26,8 @@ interface BabysitterDao {
 
     // Consultar todos los canguros
     @Query("SELECT * FROM babysitter_table")
-    fun getAllBabysitters(): LiveData<List<BabysitterEntity>>
-    //para UI y observacion en tiempo real
+    fun getAllBabysitters(): Flow<List<BabysitterEntity>>
+
 
     @Query("SELECT * FROM babysitter_table")
     suspend fun getAllBabysittersList(): List<BabysitterEntity>

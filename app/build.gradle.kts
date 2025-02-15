@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp") version libs.versions.ksp.get() apply false//agrega este plugin
+    alias(libs.plugins.ksp)
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlinxSerialization)
 }
@@ -64,33 +64,34 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    //Dependencias de Room usando libs.version.tml
+
+    //ROOM - Base de datos
     implementation(libs.androidx.room.runtime.v261)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.ui.tooling.preview.android)
-    implementation(libs.androidx.tracing.perfetto.handshake)
-    implementation(libs.volley)
-    implementation(libs.firebase.crashlytics.buildtools)
-    annotationProcessor(libs.androidx.room.compiler.v261)
     implementation(libs.androidx.room.ktx.v261)
-    implementation (libs.androidx.room.runtime)//Runtime para Room
-    implementation(libs.ktor.client.okhttp)
-    // Hilt
+    implementation(libs.androidx.room.compiler)
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // HILT - Inyección de dependencias
     implementation(libs.hilt.android)
-    ksp(libs.androidx.room.compiler) // Para Kotlin
-    implementation(libs.androidx.room.ktx) // Para Java
-    ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.android.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    //ktor
+
+    // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.negotiation)
     implementation(libs.kotlin.serialization)
     implementation(libs.ktor.client.darwin)
-    //Retrofit
+    implementation(libs.ktor.client.okhttp)
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    //Otras dependencias
     implementation(libs.kotlinx.coroutines.android)
+    implementation("io.coil-kt:coil-compose:2.0.0")
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -99,5 +100,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
-// 🔽 Aplicar el plugin de Hilt AL FINAL del archivo
+// Aplicar el plugin de Hilt AL FINAL del archivo
 apply(plugin = "dagger.hilt.android.plugin")
