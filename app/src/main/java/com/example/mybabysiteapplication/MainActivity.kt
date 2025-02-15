@@ -29,6 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.clickable
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.LiveData
@@ -113,7 +115,7 @@ fun BabySiteApp(viewModel: BabysitterViewModel) {
                 startDestination = "home",
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable("home") { HomeScreen(navController) }
+                composable("home") { HomeScreen(navController, viewModel) }
                 composable("details/{name}") { backStackEntry ->
                     val name = backStackEntry.arguments?.getString("name")
                     DetailScreen(navController, name ?: "Desconocido")
@@ -122,57 +124,44 @@ fun BabySiteApp(viewModel: BabysitterViewModel) {
         }
     )
 }
-
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, viewModel: BabysitterViewModel) {
+    val babysitters by viewModel.babysitters.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Texto descriptivo
         Text(
             text = "Administra tus solicitudes de canguro con BabySite.",
             style = MaterialTheme.typography.bodyLarge
         )
 
-        // Imagen corporativa
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = rememberImagePainter(data = R.drawable.babysitterppal),
-                contentDescription = "Logo BabySite",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        // Lista interactiva de canguros
-        val babysitters = listOf("Juan", "Ana", "Luis", "Sofía")
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(babysitters) { name ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { navController.navigate("details/$name") }
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = name, style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        text = "Ver detalles",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+        if (babysitters.isEmpty()) {
+            Text(text = "No hay babysitters disponibles.", style = MaterialTheme.typography.bodyMedium)
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(babysitters) { babysitter ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("details/${babysitter.name}") }
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = babysitter.name, style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = "Ver detalles",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         }
